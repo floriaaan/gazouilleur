@@ -6,6 +6,7 @@ import {
   Paragraph,
   Divider,
   IconButton,
+  Menu,
 } from "react-native-paper";
 import LottieView from "lottie-react-native";
 import { StyleSheet, View, Platform } from "react-native";
@@ -28,13 +29,15 @@ const Gazouilli = ({
   const [_isLiked, setLike] = useState(isLiked);
   const [_isDisliked, setDislike] = useState(isDisliked);
 
+  const [menuVisible, setMenuVisible] = useState(false);
+
   const update = () => {
     try {
       db.collection("gazouillis")
         .doc(id)
         .update({ isLiked: _isLiked, isDisliked: _isDisliked });
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
   };
 
@@ -52,15 +55,44 @@ const Gazouilli = ({
     update();
   };
 
+  const handleDelete = () => {};
+
   return (
     <Card elevation={10} style={styles.container}>
       <Card.Cover blurRadius={1} style={styles.image} source={{ uri: img }} />
       <Card.Content>
-        <View style={styles.details}>
-          <Title>{user}</Title>
-          <Paragraph> &bull; {moment(date).fromNow()}</Paragraph>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginTop: 5,
+          }}
+        >
+          <View style={styles.details}>
+            <Title>{user}</Title>
+            <Paragraph> &bull; {moment(date).fromNow()}</Paragraph>
+          </View>
+          <Menu
+          style={{marginHorizontal:5}}
+            visible={menuVisible}
+            onDismiss={() => setMenuVisible(false)}
+            anchor={
+              <IconButton
+                icon="ellipsis-v"
+                color="#aaa"
+                size={15}
+                onPress={() => setMenuVisible(true)}
+              />
+            }
+          >
+            <Menu.Item icon="heart" color="#28A745" onPress={handleLike} title="Like 🥰" />
+            <Menu.Item icon="times" onPress={handleDislike} title="Dislike 😒" />
+            <Divider />
+            <Menu.Item icon="trash" onPress={handleDelete} title="Delete this Gazouilli 😢" />
+          </Menu>
         </View>
-        <Divider style={{ marginTop: 5, marginBottom: 5 }} />
+
+        <Divider style={{ marginTop: 7, marginBottom: 7 }} />
 
         <Paragraph>{text}</Paragraph>
       </Card.Content>
@@ -121,6 +153,5 @@ const styles = StyleSheet.create({
     color: "#ffb700",
   },
 });
-
 
 // TODO : add comments

@@ -18,6 +18,7 @@ const CreateButton = ({ _createG, auth }) => {
   const [img, setImg] = useState(
     "https://lh3.googleusercontent.com/proxy/uuBWojLsHy78sgzX1a8sJ2yO2Jgs7a4N8p9AA6BTdZOW7c9I4nE7PAtKWSo7Y3DFaCeQXyefHXUu7CWQf15W9hco7TL3V-vroFMXMPQ88-NnGVYFS1WvnsanMgOEdkXxKipgBOTY6MUJ3itThUtmzg"
   );
+  const [imgVisible, setImgVisible] = useState(false);
   const [user, setUser] = useState(auth.name);
   const [text, setText] = useState("");
   const [textValid, setTV] = useState(true);
@@ -97,6 +98,17 @@ const CreateButton = ({ _createG, auth }) => {
                 colors: { primary: "#ffb700", underlineColor: "transparent" },
               }}
             />
+            {imgVisible && (
+              <TextInput
+                label="Image URL 🖼"
+                value={img}
+                onChangeText={(e) => setImg(e)}
+                mode="outlined"
+                theme={{
+                  colors: { primary: "#ffb700", underlineColor: "transparent" },
+                }}
+              ></TextInput>
+            )}
           </Dialog.Content>
           <Dialog.Actions
             style={{ flexDirection: "row", justifyContent: "space-between" }}
@@ -115,7 +127,7 @@ const CreateButton = ({ _createG, auth }) => {
                 color="#aaa"
                 size={15}
                 onPress={() => {
-                  //handleCamera();
+                  //handleMicrophone();
                 }}
               />
               <IconButton
@@ -123,7 +135,12 @@ const CreateButton = ({ _createG, auth }) => {
                 color="#aaa"
                 size={15}
                 onPress={() => {
-                  //handleCamera();
+                  setImgVisible(!imgVisible);
+                  !imgVisible
+                    ? setImg(
+                        "https://lh3.googleusercontent.com/proxy/uuBWojLsHy78sgzX1a8sJ2yO2Jgs7a4N8p9AA6BTdZOW7c9I4nE7PAtKWSo7Y3DFaCeQXyefHXUu7CWQf15W9hco7TL3V-vroFMXMPQ88-NnGVYFS1WvnsanMgOEdkXxKipgBOTY6MUJ3itThUtmzg"
+                      )
+                    : setImg("");
                 }}
               />
             </View>
@@ -230,4 +247,3 @@ const styles = StyleSheet.create({
 
 export default CreateButton;
 
-// TODO: add state for img
