@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import {
   FAB,
   Portal,
@@ -8,10 +8,14 @@ import {
   TextInput,
   Divider,
   Snackbar,
+  IconButton,
 } from "react-native-paper";
+import { Camera } from "expo-camera";
 
 const CreateButton = ({ _createG, auth }) => {
-  const [img, setImg] = useState("https://picsum.photos/500");
+  const [img, setImg] = useState(
+    "https://lh3.googleusercontent.com/proxy/uuBWojLsHy78sgzX1a8sJ2yO2Jgs7a4N8p9AA6BTdZOW7c9I4nE7PAtKWSo7Y3DFaCeQXyefHXUu7CWQf15W9hco7TL3V-vroFMXMPQ88-NnGVYFS1WvnsanMgOEdkXxKipgBOTY6MUJ3itThUtmzg"
+  );
   const [user, setUser] = useState(auth.name);
   const [text, setText] = useState("");
   const [textValid, setTV] = useState(true);
@@ -51,7 +55,7 @@ const CreateButton = ({ _createG, auth }) => {
           <Dialog.Content>
             <TextInput
               label="Username 🤴"
-              disabled
+              disabled={user !== ""}
               value={user}
               onChangeText={(e) => setUser(e)}
               mode="outlined"
@@ -68,12 +72,22 @@ const CreateButton = ({ _createG, auth }) => {
             />
           </Dialog.Content>
           <Dialog.Actions
-            style={{ flexDirection: "row-reverse", justifyContent: "flex-end" }}
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
-            <Button onPress={handleCreate}>Create</Button>
-            <Button color="#aaaaaa" onPress={hideDialog}>
-              Cancel
-            </Button>
+            <View>
+              <IconButton
+                icon="camera"
+                color="#aaa"
+                size={15}
+                onPress={() => console.log("Pressed")}
+              />
+            </View>
+            <View style={{flexDirection:'row'}}>
+              <Button color="#aaaaaa" onPress={hideDialog}>
+                Cancel
+              </Button>
+              <Button onPress={handleCreate}>Create</Button>
+            </View>
           </Dialog.Actions>
         </Dialog>
       </Portal>

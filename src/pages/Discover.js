@@ -55,12 +55,12 @@ export default function Discover({
       <Header title="Discover" subheading="Subscribe to more accounts" />
       <ScrollView horizontal style={styles.chipRow}>
         <Chip
-          avatar={<Avatar.Text size={24} label="FL" />}
+          avatar={<Avatar.Text size={24} label={auth.acronym} />}
           mode="outlined"
           style={{ marginRight: 6 }}
           onPress={() => {}}
         >
-          Florian Leroux
+          {auth.name}
         </Chip>
         <Chip
           icon="refresh"

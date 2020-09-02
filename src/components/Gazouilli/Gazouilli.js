@@ -9,6 +9,7 @@ import {
 } from "react-native-paper";
 import LottieView from "lottie-react-native";
 import { StyleSheet, View, Platform } from "react-native";
+import moment from "moment";
 
 const Gazouilli = ({ img, text, user, date, loading, id }) => {
   const [isLiked, setLike] = useState(false);
@@ -30,7 +31,7 @@ const Gazouilli = ({ img, text, user, date, loading, id }) => {
       <Card.Content>
         <View style={styles.details}>
           <Title>{user}</Title>
-          <Paragraph> &bull; {date}</Paragraph>
+          <Paragraph> &bull; {moment(date).fromNow()}</Paragraph>
         </View>
         <Divider style={{ marginTop: 5, marginBottom: 5 }} />
 
