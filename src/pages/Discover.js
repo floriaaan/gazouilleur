@@ -13,6 +13,9 @@ export default function Discover({
   _createG,
   loading,
   _setLoading,
+  navigate,
+  auth,
+  _auth,
 }) {
   const original = data;
   const handleRefresh = () => {
@@ -37,15 +40,17 @@ export default function Discover({
 
   return (
     <View style={styles.container}>
-      {false && <View style={{ alignItems: "center" }}>
-        <LottieView
-          source={require("./../lottie/hashtag.json")}
-          autoPlay
-          loop
-          resizeMode="contain"
-          style={{ height: 200, width: 400 }}
-        ></LottieView>
-      </View>}
+      {false && (
+        <View style={{ alignItems: "center" }}>
+          <LottieView
+            source={require("./../lottie/hashtag.json")}
+            autoPlay
+            loop
+            resizeMode="contain"
+            style={{ height: 200, width: 400 }}
+          ></LottieView>
+        </View>
+      )}
 
       <Header title="Discover" subheading="Subscribe to more accounts" />
       <ScrollView horizontal style={styles.chipRow}>
@@ -73,6 +78,17 @@ export default function Discover({
         >
           Search
         </Chip>
+        <Chip
+          icon="lock"
+          mode="outlined"
+          style={{ marginRight: 6 }}
+          onPress={() => {
+            _auth({});
+            navigate("Login");
+          }}
+        >
+          Log out
+        </Chip>
       </ScrollView>
       {loading ? (
         <ProgressBar
@@ -95,7 +111,7 @@ export default function Discover({
       )}
 
       <List data={data} _render={_renderGList} loading={loading} />
-      <CreateButton _createG={_createG} />
+      <CreateButton _createG={_createG} auth={auth} />
     </View>
   );
 }

@@ -2,6 +2,9 @@ import { StatusBar } from "expo-status-bar";
 import React, { useState, useEffect } from "react";
 import { Provider as PaperProvider } from "react-native-paper";
 
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+
 import AwesomeIcon from "react-native-vector-icons/FontAwesome";
 import { useFonts } from "@use-expo/font";
 
@@ -10,7 +13,9 @@ import { AppLoading } from "expo";
 import Gazouilli from "./src/components/Gazouilli/Gazouilli";
 import Discover from "./src/pages/Discover";
 import Login from "./src/pages/auth/Login";
+import Register from "./src/pages/auth/Register";
 
+const Stack = createStackNavigator();
 export default function App() {
   const [loaded] = useFonts({
     Montserrat: require("./assets/fonts/Montserrat-Regular.ttf"),
@@ -73,6 +78,9 @@ export default function App() {
     );
   };
 
+  const [navigation, _navigate] = useState("Login");
+  const [auth, _auth] = useState({ name: "Florian" });
+
   return (
     <>
       {!loaded ? (
@@ -83,7 +91,25 @@ export default function App() {
             icon: (props) => <AwesomeIcon {...props} />,
           }}
         >
-          <Login></Login>
+          {navigation === "Register" && (
+            <Register navigate={_navigate} auth={auth} _auth={_auth}></Register>
+          )}
+          {navigation === "Login" && (
+            <Login navigate={_navigate} auth={auth} _auth={_auth}></Login>
+          )}
+          {navigation === "Discover" && (
+            <Discover
+              data={Gazs}
+              loading={loading}
+              _setLoading={setLoading}
+              _renderGList={_renderGaz}
+              _createG={_createG}
+              navigate={_navigate}
+              auth={auth}
+              _auth={_auth}
+            />
+          )}
+
           <StatusBar style="auto" />
         </PaperProvider>
       )}

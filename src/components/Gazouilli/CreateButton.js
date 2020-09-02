@@ -10,10 +10,11 @@ import {
   Snackbar,
 } from "react-native-paper";
 
-const CreateButton = ({ _createG }) => {
+const CreateButton = ({ _createG, auth }) => {
   const [img, setImg] = useState("https://picsum.photos/500");
-  const [user, setUser] = useState("");
+  const [user, setUser] = useState(auth.name);
   const [text, setText] = useState("");
+  const [textValid, setTV] = useState(true);
 
   const [dialogVisible, setDVisible] = useState(false);
   const showDialog = () => setDVisible(true);
@@ -24,11 +25,15 @@ const CreateButton = ({ _createG }) => {
   const hideSnack = () => setSVisible(false);
 
   const handleCreate = () => {
-    _createG(img, user, text);
-    hideDialog();
-    showSnack();
-    setUser("");
-    setText("");
+    if (user !== "" && text !== "") {
+      _createG(img, user, text);
+      setUser("");
+      setText("");
+      showSnack();
+      hideDialog();
+    } else {
+      setTV(false);
+    }
   };
 
   return (
@@ -46,6 +51,7 @@ const CreateButton = ({ _createG }) => {
           <Dialog.Content>
             <TextInput
               label="Username 🤴"
+              disabled
               value={user}
               onChangeText={(e) => setUser(e)}
               mode="outlined"
@@ -57,6 +63,7 @@ const CreateButton = ({ _createG }) => {
               onChangeText={(e) => setText(e)}
               mode="outlined"
               multiline
+              error={!textValid}
               numberOfLines={5}
             />
           </Dialog.Content>

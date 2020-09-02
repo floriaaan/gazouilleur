@@ -1,16 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { View, StyleSheet, Platform, Alert } from "react-native";
 import Header from "../../components/Layouts/Header";
-import { Divider, TextInput, Button } from "react-native-paper";
+import { Divider, TextInput, Button, ProgressBar } from "react-native-paper";
 import LottieView from "lottie-react-native";
 
-import * as LocalAuthentication from "expo-local-authentication";
+import { score } from "react-native-zxcvbn";
 
-export default function Login({ navigate, auth, _auth }) {
+export default function Register({ navigate, auth, _auth }) {
   const [email, setEmail] = useState("");
   const [emailValid, setEV] = useState(true);
   const [password, setPassword] = useState("");
   const [passwordValid, setPV] = useState(true);
+  const [zxcvbn, setScore] = useState({
+    score: 0,
+    color: "#dc3545",
+  });
 
   const handleEmail = (text) => {
     if (text !== "") {
@@ -26,53 +30,47 @@ export default function Login({ navigate, auth, _auth }) {
     if (text !== "") {
       const passformat = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
       passformat.test(text) ? setPV(true) : setPV(false);
+      setScore({
+        score: 0,
+        color: "#dc3545",
+      });
     } else {
       setPV(true);
+      let _score = score(text);
+      let _color;
+      switch (_score) {
+        case 0:
+          _color = "#dc3545";
+          break;
+        case 1:
+          _color = "#dc3545";
+          break;
+        case 2:
+          _color = "#ffc107";
+          break;
+        case 3:
+          _color = "#28a745";
+          break;
+        case 4:
+          _color = "#007bff";
+          break;
+        default:
+          _color = "#dc3545";
+          break;
+      }
+      setScore({
+        score: _score,
+        color: _color,
+      });
     }
     setPassword(text);
   };
 
-  const [biometricsCompatible, setBC] = useState(false);
-
-  const handleLogin = () => {
-    if (
-      emailValid &&
-      passwordValid &&
-      password === "Testing123!" &&
-      email === "tetra96@live.fr"
-    ) {
-      navigate("Discover");
+  const handleRegister = () => {
+    if (emailValid && passwordValid) {
+      Alert.alert("Success");
     } else {
-      Alert.alert("Error", "Not logged");
-    }
-  };
-
-  useEffect(() => {
-    const checkBio = async () => {
-      const isBioCompatible = await checkDeviceForHardware();
-      const hasBio = await checkForEnrolled();
-      if (isBioCompatible && hasBio) {
-        setBC(true);
-      }
-    };
-    checkBio();
-  }, []);
-
-  const checkDeviceForHardware = async () => {
-    return await LocalAuthentication.hasHardwareAsync();
-  };
-  const checkForEnrolled = async () => {
-    return await LocalAuthentication.isEnrolledAsync();
-  };
-
-  const scanBiometrics = async () => {
-    let result = await LocalAuthentication.authenticateAsync({
-      promptMessage: "Log into Gazouilli",
-    });
-    if (result.success) {
-      navigate("Discover");
-    } else {
-      Alert.alert("Error", "Fingerprint does not works");
+      Alert.alert("Error");
     }
   };
 
@@ -80,15 +78,15 @@ export default function Login({ navigate, auth, _auth }) {
     <View style={styles.container}>
       <View style={{ alignItems: "center" }}>
         <LottieView
-          source={require("./../../lottie/auth.json")}
+          source={require("../../lottie/newspaper.json")}
           autoPlay
           resizeMode="contain"
           style={{ height: 300, width: 400 }}
         ></LottieView>
       </View>
       <Header
-        title="Login"
-        subheading="Connect to your Gazouillis's world 👶"
+        title="Register"
+        subheading="Enter the Gazouilleur's community 👶"
       ></Header>
       <Divider style={{ marginVertical: 10 }} />
       <View style={styles.form}>
@@ -110,26 +108,21 @@ export default function Login({ navigate, auth, _auth }) {
           onChangeText={(text) => handlePass(text)}
           style={{ marginTop: 10 }}
         ></TextInput>
+
+        <ProgressBar progress={(zxcvbn.score * 25) / 100} color={zxcvbn.color} />
         <Button
           color="#ffb700"
           mode="outlined"
-          onPress={handleLogin}
+          onPress={handleRegister}
           style={{ marginTop: 50 }}
         >
-          Log into Gazouilli
+          Make your first Gazouilli
         </Button>
-        {biometricsCompatible && (
-          <Button
-            mode="outlined"
-            onPress={scanBiometrics}
-            style={{ marginTop: 5 }}
-          >
-            Use biometrics
-          </Button>
-        )}
+
         <Divider style={{ marginVertical: 7 }} />
 
-        <Button onPress={() => navigate("Register")}>Sign up</Button>
+        <Button onPress={() => navigate("Login")}>Sign in</Button>
+
         <View></View>
       </View>
     </View>
