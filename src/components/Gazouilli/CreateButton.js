@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
 import {
   FAB,
   Portal,
@@ -9,6 +9,8 @@ import {
   Divider,
   Snackbar,
   IconButton,
+  Paragraph,
+  Modal,
 } from "react-native-paper";
 import { Camera } from "expo-camera";
 
@@ -27,6 +29,25 @@ const CreateButton = ({ _createG, auth }) => {
   const [snackVisible, setSVisible] = useState(false);
   const showSnack = () => setSVisible(true);
   const hideSnack = () => setSVisible(false);
+
+  /*const [cameraPermissions, _cameraPermissions] = useState(null);
+  const [cameraType, setCType] = useState(Camera.Constants.Type.back);
+  const [cameraError, _cameraError] = useState(false);
+
+  const [cameraModal, _cameraModal] = useState(false);
+
+  const handleCamera = async () => {
+    const { status } = await Camera.requestPermissionsAsync();
+    console.log(await Camera.requestPermissionsAsync());
+    _cameraPermissions(status === "granted");
+    if (cameraPermissions === null || cameraPermissions === false) {
+      _cameraError(true);
+      _cameraModal(false);
+    } else {
+      _cameraError(false);
+      _cameraModal(true);
+    }
+  };*/
 
   const handleCreate = () => {
     if (user !== "" && text !== "") {
@@ -59,6 +80,9 @@ const CreateButton = ({ _createG, auth }) => {
               value={user}
               onChangeText={(e) => setUser(e)}
               mode="outlined"
+              theme={{
+                colors: { primary: "#ffb700", underlineColor: "transparent" },
+              }}
             />
             <Divider style={{ marginVertical: 10 }} />
             <TextInput
@@ -69,42 +93,127 @@ const CreateButton = ({ _createG, auth }) => {
               multiline
               error={!textValid}
               numberOfLines={5}
+              theme={{
+                colors: { primary: "#ffb700", underlineColor: "transparent" },
+              }}
             />
           </Dialog.Content>
           <Dialog.Actions
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
-            <View>
+            <View style={{ flexDirection: "row" }}>
               <IconButton
                 icon="camera"
                 color="#aaa"
                 size={15}
-                onPress={() => console.log("Pressed")}
+                onPress={() => {
+                  //handleCamera();
+                }}
+              />
+              <IconButton
+                icon="microphone"
+                color="#aaa"
+                size={15}
+                onPress={() => {
+                  //handleCamera();
+                }}
+              />
+              <IconButton
+                icon="image"
+                color="#aaa"
+                size={15}
+                onPress={() => {
+                  //handleCamera();
+                }}
               />
             </View>
-            <View style={{flexDirection:'row'}}>
+            <View style={{ flexDirection: "row" }}>
               <Button color="#aaaaaa" onPress={hideDialog}>
                 Cancel
               </Button>
-              <Button onPress={handleCreate}>Create</Button>
+              <Button color="#ffb700" onPress={handleCreate}>
+                Create
+              </Button>
             </View>
           </Dialog.Actions>
         </Dialog>
+        <Snackbar
+          style={{
+            flex: 1,
+            justifyContent: "space-between",
+          }}
+          visible={snackVisible}
+          onDismiss={hideSnack}
+          action={{
+            label: "Cool 👍",
+            onPress: hideSnack,
+          }}
+        >
+          Your Gazouilli is on the Internet! 🎉
+        </Snackbar>
+
+        {/*{cameraError && (
+          <Dialog
+            visible={cameraError}
+            onDismiss={() => {
+              _cameraError(false);
+            }}
+          >
+            <Dialog.Title>Camera 📸</Dialog.Title>
+            <Dialog.Content>
+              <Paragraph>Something went wrong with permissions ...</Paragraph>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button
+                onPress={() => {
+                  _cameraError(false);
+                }}
+              >
+                Okay ... 😕
+              </Button>
+            </Dialog.Actions>
+          </Dialog>
+        )}
+
+        <Modal
+          visible={cameraModal}
+          onDismiss={() => {
+            _cameraModal(false);
+          }}
+        >
+          <Camera style={{ flex: 1 }} type={cameraType}>
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: "transparent",
+                flexDirection: "row",
+              }}
+            >
+              <TouchableOpacity
+                style={{
+                  flex: 0.1,
+                  alignSelf: "flex-end",
+                  alignItems: "center",
+                }}
+                onPress={() => {
+                  setCType(
+                    cameraType === Camera.Constants.Type.back
+                      ? Camera.Constants.Type.front
+                      : Camera.Constants.Type.back
+                  );
+                }}
+              >
+                <Text
+                  style={{ fontSize: 18, marginBottom: 10, color: "white" }}
+                >
+                  Flip
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </Camera>
+          )
+              </Modal>*/}
       </Portal>
-      <Snackbar
-        style={{
-          flex: 1,
-          justifyContent: "space-between",
-        }}
-        visible={snackVisible}
-        onDismiss={hideSnack}
-        action={{
-          label: "Cool 👍",
-          onPress: hideSnack,
-        }}
-      >
-        Your Gazouilli is on the Internet! 🎉
-      </Snackbar>
     </>
   );
 };
@@ -120,3 +229,5 @@ const styles = StyleSheet.create({
 });
 
 export default CreateButton;
+
+// TODO: add state for img

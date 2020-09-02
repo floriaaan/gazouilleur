@@ -30,6 +30,8 @@ export default function App() {
       user: user,
       text: text,
       date: moment().toISOString(),
+      isLiked: false,
+      isDisliked: false,
     });
     setGazs([
       ...Gazs,
@@ -43,26 +45,30 @@ export default function App() {
   };
 
   useEffect(() => {
-    db.collection("gazouillis").onSnapshot(function (querySnapshot) {
-      let _tmpList = [];
+    db.collection("gazouillis")
+      .orderBy("date")
+      .onSnapshot(function (querySnapshot) {
+        let _tmpList = [];
 
-      querySnapshot.forEach(function (doc) {
-        _tmpList.push(doc.data());
+        querySnapshot.forEach(function (doc) {
+          _tmpList.push({ ...doc.data(), id: doc.id });
+        });
+
+        setGazs(_tmpList);
       });
-
-      setGazs(_tmpList);
-    });
     setLoading(false);
   }, []);
 
   const _renderGaz = ({ item, key }) => {
     return (
       <Gazouilli
-        id={key - 1}
+        id={item.id}
         img={item.img}
         user={item.user}
         text={item.text}
         date={item.date}
+        isLiked={item.isLiked}
+        isDisliked={item.isDisliked}
         key={key}
       ></Gazouilli>
     );

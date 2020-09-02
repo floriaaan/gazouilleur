@@ -98,6 +98,9 @@ export default function Register({ navigate, auth, _auth }) {
           mode="outlined"
           error={!emailValid}
           onChangeText={(text) => handleEmail(text)}
+          theme={{
+            colors: { primary: "#ffb700", underlineColor: "transparent" },
+          }}
         ></TextInput>
         <TextInput
           color="#ffb700"
@@ -107,6 +110,9 @@ export default function Register({ navigate, auth, _auth }) {
           secureTextEntry
           onChangeText={(text) => handlePass(text)}
           style={{ marginTop: 10 }}
+          theme={{
+            colors: { primary: "#ffb700", underlineColor: "transparent" },
+          }}
         ></TextInput>
 
         <ProgressBar progress={(zxcvbn.score * 25) / 100} color={zxcvbn.color} />

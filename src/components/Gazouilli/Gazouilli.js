@@ -11,18 +11,45 @@ import LottieView from "lottie-react-native";
 import { StyleSheet, View, Platform } from "react-native";
 import moment from "moment";
 
-const Gazouilli = ({ img, text, user, date, loading, id }) => {
-  const [isLiked, setLike] = useState(false);
-  const [isDisiked, setDislike] = useState(false);
+import firebase from "../../utils/firebase";
+
+let db = firebase.firestore();
+
+const Gazouilli = ({
+  img,
+  text,
+  user,
+  date,
+  loading,
+  id,
+  isLiked,
+  isDisliked,
+}) => {
+  const [_isLiked, setLike] = useState(isLiked);
+  const [_isDisliked, setDislike] = useState(isDisliked);
+
+  const update = () => {
+    try {
+      db.collection("gazouillis")
+        .doc(id)
+        .update({ isLiked: _isLiked, isDisliked: _isDisliked });
+    } catch (err) {
+      console.log(err)
+    }
+  };
 
   const handleLike = () => {
     setDislike(false);
-    setLike(!isLiked);
+    setLike(!_isLiked);
+
+    update();
   };
 
   const handleDislike = () => {
     setLike(false);
-    setDislike(!isDisiked);
+    setDislike(!_isDisliked);
+
+    update();
   };
 
   return (
@@ -38,7 +65,7 @@ const Gazouilli = ({ img, text, user, date, loading, id }) => {
         <Paragraph>{text}</Paragraph>
       </Card.Content>
       <Card.Content>
-        {isLiked && (
+        {_isLiked && (
           <LottieView
             source={require("../../lottie/like-heart-button.json")}
             autoPlay
@@ -48,13 +75,13 @@ const Gazouilli = ({ img, text, user, date, loading, id }) => {
       <Card.Actions style={styles.actions}>
         <IconButton
           icon="heart"
-          color={isLiked ? "#28A745" : "#aaa"}
+          color={_isLiked ? "#28A745" : "#aaa"}
           size={20}
           onPress={handleLike}
         />
         <IconButton
           icon="times"
-          color={isDisiked ? "#dc3545" : "#aaa"}
+          color={_isDisliked ? "#dc3545" : "#aaa"}
           size={20}
           onPress={handleDislike}
         />
@@ -94,3 +121,6 @@ const styles = StyleSheet.create({
     color: "#ffb700",
   },
 });
+
+
+// TODO : add comments
