@@ -6,6 +6,7 @@ import LottieView from "lottie-react-native";
 
 import firebase from "../utils/firebase";
 import Gazouilli from "../components/Gazouilli/Gazouilli";
+import { ScrollView } from "react-native-gesture-handler";
 
 let db = firebase.firestore();
 
@@ -20,15 +21,11 @@ export default function User({ navigate, auth, _auth }) {
         .where("user", "==", auth.name)
         .get();
 
+      let _tmpList = [];
       snapshot.forEach(function (querySnapshot) {
-        let _tmpList = [];
-
-        querySnapshot.forEach(function (doc) {
-          _tmpList.push({ ...doc.data(), id: doc.id });
-        });
-
-        setGazs(_tmpList);
+        _tmpList.push({ ...querySnapshot.data(), id: querySnapshot.id });
       });
+      setGazs(_tmpList);
     };
     fetchGazs();
   }, []);
@@ -63,34 +60,41 @@ export default function User({ navigate, auth, _auth }) {
       </View>
 
       <Divider style={{ marginVertical: 10 }} />
-
-      {Gazs.length > 0 ? (
-        Gazs.map((item, key) => {
-          return (
-            <React.Fragment key={key}>
-              <Gazouilli
-                id={item.id}
-                img={item.img}
-                user={item.user}
-                text={item.text}
-                date={item.date}
-                isLiked={item.isLiked}
-                isDisliked={item.isDisliked}
-                _auth={auth}
-                key={key}
-              ></Gazouilli>
-              <Divider style={{ marginVertical: 4 }}></Divider>
-            </React.Fragment>
-          );
-        })
-      ) : (
-        <View style={{ alignItems: "center", justifyContent: "center", marginTop:200 }}>
-          <Title>Still no Gazouilis 😰</Title>
-          <Subheading>
-            You really should thinking about posting one some day 🙄
-          </Subheading>
-        </View>
-      )}
+      <ScrollView>
+        {Gazs.length > 0 ? (
+          Gazs.map((item, key) => {
+            return (
+              <React.Fragment key={key}>
+                <Gazouilli
+                  id={item.id}
+                  img={item.img}
+                  user={item.user}
+                  text={item.text}
+                  date={item.date}
+                  isLiked={item.isLiked}
+                  isDisliked={item.isDisliked}
+                  _auth={auth}
+                  key={key}
+                ></Gazouilli>
+                <Divider style={{ marginVertical: 4 }}></Divider>
+              </React.Fragment>
+            );
+          })
+        ) : (
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              marginTop: 200,
+            }}
+          >
+            <Title>Still no Gazouilis 😰</Title>
+            <Subheading>
+              You really should thinking about posting one some day 🙄
+            </Subheading>
+          </View>
+        )}
+      </ScrollView>
     </View>
   );
 }

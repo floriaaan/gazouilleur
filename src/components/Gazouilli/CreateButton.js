@@ -10,17 +10,15 @@ import {
   Snackbar,
   IconButton,
 } from "react-native-paper";
-import { Camera } from "expo-camera";
 
 import * as ImagePicker from "expo-image-picker";
-import Constants from "expo-constants";
 import * as Permissions from "expo-permissions";
 
 import firebase from "../../utils/firebase";
 
 var storageRef = firebase.storage().ref();
 
-const CreateButton = ({ _createG, auth }) => {
+const CreateButton = ({ _createG, auth, fabStyle }) => {
   const [img, setImg] = useState("");
   const [imgPicker, setImgPicker] = useState(null);
   const [imgVisible, setImgVisible] = useState(false);
@@ -121,7 +119,7 @@ const CreateButton = ({ _createG, auth }) => {
   return (
     <>
       <FAB
-        style={styles.fab}
+        style={fabStyle || styles.fab}
         color="#ffb700"
         label="Gazouille"
         icon="plus"

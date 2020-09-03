@@ -94,6 +94,7 @@ const Gazouilli = ({
 
   const handleDelete = async () => {
     let resp = await db.collection("gazouillis").doc(id).delete();
+    setMenuVisible(false);
     setDeleteVisible(true);
   };
 

@@ -17,6 +17,9 @@ import Login from "./src/pages/auth/Login";
 import Register from "./src/pages/auth/Register";
 import User from "./src/pages/User";
 
+import "./src/utils/fix";
+import Stories from "./src/pages/Stories";
+
 export default function App() {
   const _tmpAuth = {
     name: "Florian",
@@ -31,7 +34,7 @@ export default function App() {
   });
   const [loading, setLoading] = useState(true);
 
-  const [navigation, _navigate] = useState("Discover");
+  const [navigation, _navigate] = useState("Login");
   const [auth, _auth] = useState(_tmpAuth);
 
   const [Gazs, setGazs] = useState([]);
@@ -116,6 +119,15 @@ export default function App() {
           )}
           {navigation === "User" && (
             <User navigate={_navigate} auth={auth} _auth={_auth} />
+          )}
+          {navigation === "Stories" && (
+            <Stories
+              navigate={_navigate}
+              auth={auth}
+              _auth={_auth}
+              loading={loading}
+              _setLoading={setLoading}
+            />
           )}
 
           <StatusBar style="auto" />
