@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
+import { StyleSheet, View, Platform } from "react-native";
 import {
   FAB,
   Portal,
@@ -9,15 +9,20 @@ import {
   Divider,
   Snackbar,
   IconButton,
-  Paragraph,
-  Modal,
 } from "react-native-paper";
 import { Camera } from "expo-camera";
 
+import * as ImagePicker from "expo-image-picker";
+import Constants from "expo-constants";
+import * as Permissions from "expo-permissions";
+
+import firebase from "../../utils/firebase";
+
+var storageRef = firebase.storage().ref();
+
 const CreateButton = ({ _createG, auth }) => {
-  const [img, setImg] = useState(
-    "https://lh3.googleusercontent.com/proxy/uuBWojLsHy78sgzX1a8sJ2yO2Jgs7a4N8p9AA6BTdZOW7c9I4nE7PAtKWSo7Y3DFaCeQXyefHXUu7CWQf15W9hco7TL3V-vroFMXMPQ88-NnGVYFS1WvnsanMgOEdkXxKipgBOTY6MUJ3itThUtmzg"
-  );
+  const [img, setImg] = useState("");
+  const [imgPicker, setImgPicker] = useState(null);
   const [imgVisible, setImgVisible] = useState(false);
   const [user, setUser] = useState(auth.name);
   const [text, setText] = useState("");
@@ -52,13 +57,64 @@ const CreateButton = ({ _createG, auth }) => {
 
   const handleCreate = () => {
     if (user !== "" && text !== "") {
-      _createG(img, user, text);
-      setUser("");
+      _createG(
+        img ||
+          "https://merriam-webster.com/assets/mw/images/article/art-wap-article-main/egg-3442-e1f6463624338504cd021bf23aef8441@1x.jpg",
+        user,
+        text
+      );
       setText("");
       showSnack();
       hideDialog();
+      setImg("");
     } else {
       setTV(false);
+    }
+  };
+
+  const handlePicker = async () => {
+    if (Platform.OS !== "web") {
+      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+      if (status !== "granted") {
+        alert("Sorry, we need camera roll permissions to make this work!");
+      }
+    }
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+      if (!result.cancelled) {
+        const file = await fetch(result.uri);
+        const blob = await file.blob();
+
+        setImgPicker(blob);
+        const uploadTask = storageRef.child("images").put(blob);
+        uploadTask.on(
+          "state_changed",
+          function (snapshot) {
+            var progress =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            //console.log("Upload is " + progress + "% done");
+          },
+          function (error) {
+            console.log("error", error);
+          },
+          function () {
+            uploadTask.snapshot.ref
+              .getDownloadURL()
+              .then(function (downloadURL) {
+                //console.log("File available at", downloadURL);
+                setImg(downloadURL);
+              });
+            setImgVisible(false);
+          }
+        );
+      }
+    } catch (E) {
+      console.log(E);
     }
   };
 
@@ -134,13 +190,14 @@ const CreateButton = ({ _createG, auth }) => {
                 icon="image"
                 color="#aaa"
                 size={15}
+                onPress={handlePicker}
+              />
+              <IconButton
+                icon="link"
+                color="#aaa"
+                size={15}
                 onPress={() => {
-                  setImgVisible(!imgVisible);
-                  !imgVisible
-                    ? setImg(
-                        "https://lh3.googleusercontent.com/proxy/uuBWojLsHy78sgzX1a8sJ2yO2Jgs7a4N8p9AA6BTdZOW7c9I4nE7PAtKWSo7Y3DFaCeQXyefHXUu7CWQf15W9hco7TL3V-vroFMXMPQ88-NnGVYFS1WvnsanMgOEdkXxKipgBOTY6MUJ3itThUtmzg"
-                      )
-                    : setImg("");
+                  setImgVisible(!imgVisible)
                 }}
               />
             </View>
@@ -246,4 +303,3 @@ const styles = StyleSheet.create({
 });
 
 export default CreateButton;
-

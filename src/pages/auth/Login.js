@@ -67,9 +67,15 @@ export default function Login({ navigate, auth, _auth }) {
 
   const scanBiometrics = async () => {
     let result = await LocalAuthentication.authenticateAsync({
-      promptMessage: "Log into Gazouilli",
+      promptMessage: "Log into Gazouilli 🔐",
     });
     if (result.success) {
+      _auth({
+        name: "Florian",
+        acronym: "Florian".split(" ").map((word) => {
+          if (word.length > 0) return word[0];
+        }),
+      });
       navigate("Discover");
     } else {
       Alert.alert("Error", "Fingerprint does not works");
