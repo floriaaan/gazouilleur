@@ -19,11 +19,8 @@ export default function Discover({
   data,
   _renderGList,
   _createG,
-  loading,
-  _setLoading,
   navigate,
   auth,
-  _auth,
 }) {
   const original = data;
   const handleRefresh = () => {};
@@ -58,20 +55,11 @@ export default function Discover({
       <Header title="Discover" subheading="Subscribe to more accounts" />
       <ChipRow
         auth={auth}
-        _auth={_auth}
         handleRefresh={handleRefresh}
         toggleSearchVisible={toggleSearchVisible}
         navigate={navigate}
       ></ChipRow>
-      {loading ? (
-        <ProgressBar
-          style={{ marginHorizontal: 20, marginVertical: 4 }}
-          indeterminate
-          color="#ffb700"
-        />
-      ) : (
-        <></>
-      )}
+      
       {searchVisible ? (
         <Searchbar
           style={styles.searchbar}
@@ -84,7 +72,7 @@ export default function Discover({
       )}
       <View style={{ height: 790 }}>
         {data.length > 0 ? (
-          <List data={data} _render={_renderGList} loading={loading} />
+          <List data={data} _render={_renderGList} />
         ) : (
           <View
             style={{
@@ -93,7 +81,7 @@ export default function Discover({
               marginTop: 300,
             }}
           >
-            <Title>Still no Stories 📼</Title>
+            <Title>Still no Gazouillis 🥱</Title>
             <Subheading>
               Nothing to tell here... Unless you have something to share us 🤔
             </Subheading>

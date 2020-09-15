@@ -1,29 +1,11 @@
 import React, { useState } from "react";
-import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import Carousel, { Pagination } from "react-native-snap-carousel";
 
-import Gazouilli from "./Gazouilli";
 import { View } from "react-native";
 
-export default function List({ data, _render, loading }) {
+export default function List({ data, _render }) {
   const [active, setActive] = useState(0);
 
-  const _renderSkeletons = ({ item, key }) => {
-    return (
-      <SkeletonPlaceholder
-        containerStyle={{ flex: 1, width: 300 }}
-        animationType="pulse"
-        isLoading={true}
-      >
-        <SkeletonPlaceholder.Item
-          marginTop={6}
-          width={80}
-          height={20}
-          borderRadius={4}
-        ></SkeletonPlaceholder.Item>
-      </SkeletonPlaceholder>
-    );
-  };
 
   return (
     <View>

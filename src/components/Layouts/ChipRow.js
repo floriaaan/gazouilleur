@@ -2,10 +2,12 @@ import React from "react";
 import { ScrollView, Linking } from "react-native";
 import { Chip, Avatar } from "react-native-paper";
 
+import firebase from "../../utils/firebase";
+
+const fbAuth = firebase.auth();
+
 export default function ChipRow({
   auth,
-  _auth,
-  handleRefresh,
   toggleSearchVisible,
   navigate,
 }) {
@@ -19,14 +21,14 @@ export default function ChipRow({
       showsHorizontalScrollIndicator={false}
     >
       <Chip
-        avatar={<Avatar.Text size={24} label={auth.acronym} />}
+        avatar={<Avatar.Text size={24} label={auth && auth.user ? "XX" : '?'} />}
         mode="outlined"
         style={{ marginRight: 6 }}
         onPress={() => {
           navigate("User");
         }}
       >
-        {auth.name}
+        {auth && auth.user ? auth.user.email : 'Anonym'}
       </Chip>
       <Chip
         icon="globe"
@@ -58,7 +60,7 @@ export default function ChipRow({
         mode="outlined"
         style={{ marginRight: 6 }}
         onPress={() => {
-          _auth({});
+          fbAuth.signOut();
           navigate("Login");
         }}
       >

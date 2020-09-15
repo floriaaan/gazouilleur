@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "react-gazouilli",
-    "slug": "react-gazouilli",
+    "name": "Gazouilleur",
+    "slug": "Gazouilleur",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -13,14 +13,18 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
+      "bundleIdentifier": "io.floriaaan.gazouilleur",
+      "buildNumber": "1.0.0",
       "supportsTablet": true
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "android": {
+      "package": "io.floriaaan.gazouilleur",
+      "versionCode": 1
     }
   }
 }

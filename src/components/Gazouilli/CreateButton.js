@@ -18,7 +18,7 @@ import firebase from "../../utils/firebase";
 
 var storageRef = firebase.storage().ref();
 
-const CreateButton = ({ _createG, auth, fabStyle }) => {
+const CreateButton = ({ _createG, auth, style }) => {
   const [img, setImg] = useState("");
   const [imgPicker, setImgPicker] = useState(null);
   const [imgVisible, setImgVisible] = useState(false);
@@ -54,12 +54,11 @@ const CreateButton = ({ _createG, auth, fabStyle }) => {
   };*/
 
   const handleCreate = () => {
-    if (user !== "" && text !== "") {
+    if (text !== "") {
       _createG(
         img ||
           "https://merriam-webster.com/assets/mw/images/article/art-wap-article-main/egg-3442-e1f6463624338504cd021bf23aef8441@1x.jpg",
-        user,
-        text
+          text
       );
       setText("");
       showSnack();
@@ -119,7 +118,7 @@ const CreateButton = ({ _createG, auth, fabStyle }) => {
   return (
     <>
       <FAB
-        style={fabStyle || styles.fab}
+        style={style || styles.fab}
         color="#ffb700"
         label="Gazouille"
         icon="plus"

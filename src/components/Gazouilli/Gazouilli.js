@@ -21,21 +21,11 @@ import moment from "moment";
 
 import firebase from "../../utils/firebase";
 import { ScrollView } from "react-native-gesture-handler";
-import { auth } from "firebase";
 
 let db = firebase.firestore();
 
-const Gazouilli = ({
-  img,
-  text,
-  user,
-  date,
-  loading,
-  id,
-  isLiked,
-  isDisliked,
-  _auth,
-}) => {
+
+const Gazouilli = ({ img, text, uid, date, id, isLiked, isDisliked, auth }) => {
   const [_isLiked, setLike] = useState(isLiked);
   const [_isDisliked, setDislike] = useState(isDisliked);
   const [comments, setComments] = useState([]);
@@ -52,12 +42,13 @@ const Gazouilli = ({
   const showSnack = () => setSVisible(true);
   const hideSnack = () => setSVisible(false);
 
+
   const handleComments = () => {
     if (commentText !== "" && commentText.length < 40) {
       setCommentTextValid(true);
       if (commentTextValid) {
         db.collection("gazouillis").doc(id).collection("comments").doc().set({
-          user: _auth.name,
+          user: auth.uid,
           text: commentText,
         });
         setCommentText("");
@@ -113,7 +104,6 @@ const Gazouilli = ({
     };
     fetchComments();
   }, []);
-  //console.log(_auth)
   return (
     <>
       <Card elevation={10} style={styles.container}>
@@ -127,7 +117,7 @@ const Gazouilli = ({
             }}
           >
             <View style={styles.details}>
-              <Title>{user}</Title>
+              <Title>{uid}</Title>
               <Paragraph> &bull; {moment(date).fromNow()}</Paragraph>
             </View>
             <View style={{ flexDirection: "row" }}>
@@ -163,7 +153,7 @@ const Gazouilli = ({
                   onPress={handleDislike}
                   title="Dislike 😒"
                 />
-                {_auth.name === user && (
+                {auth && auth.uid && auth.uid === uid && (
                   <>
                     <Divider />
                     <Menu.Item
@@ -281,8 +271,8 @@ const Gazouilli = ({
           <Dialog.Content>
             <TextInput
               label="Username 🤴"
-              disabled={user !== ""}
-              value={user}
+              disabled={auth.display_name !== ""}
+              value={auth.display_name}
               onChangeText={(e) => setUser(e)}
               mode="outlined"
               theme={{

@@ -6,6 +6,9 @@ import LottieView from "lottie-react-native";
 
 import { score } from "react-native-zxcvbn";
 
+import firebase from "../../utils/firebase";
+let fbAuth = firebase.auth();
+
 export default function Register({ navigate, auth, _auth }) {
   const [email, setEmail] = useState("");
   const [emailValid, setEV] = useState(true);
@@ -21,22 +24,18 @@ export default function Register({ navigate, auth, _auth }) {
       const emailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
       emailformat.test(text) ? setEV(true) : setEV(false);
     } else {
-      setEV(true);
+      setEV(false);
     }
     setEmail(text);
   };
 
-  const handlePass = (text) => {
+  const handlePass = async (text) => {
     if (text !== "") {
       const passformat = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
       passformat.test(text) ? setPV(true) : setPV(false);
-      setScore({
-        score: 0,
-        color: "#dc3545",
-      });
-    } else {
       setPV(true);
-      let _score = score(text);
+      /*let _score = await score(text);
+      console.log(_score);
       let _color;
       switch (_score) {
         case 0:
@@ -61,14 +60,20 @@ export default function Register({ navigate, auth, _auth }) {
       setScore({
         score: _score,
         color: _color,
+      });*/
+    } else {
+      setScore({
+        score: 0,
+        color: "#dc3545",
       });
+      setPV(false);
     }
     setPassword(text);
   };
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     if (emailValid && passwordValid) {
-      Alert.alert("Success");
+      const response = await fbAuth.createUserWithEmailAndPassword(email, password);
     } else {
       Alert.alert("Error");
     }
@@ -115,7 +120,10 @@ export default function Register({ navigate, auth, _auth }) {
           }}
         ></TextInput>
 
-        <ProgressBar progress={(zxcvbn.score * 25) / 100} color={zxcvbn.color} />
+        <ProgressBar
+          progress={(zxcvbn.score * 25) / 100}
+          color={zxcvbn.color}
+        />
         <Button
           color="#ffb700"
           mode="outlined"

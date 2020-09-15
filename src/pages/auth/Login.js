@@ -5,8 +5,11 @@ import { Divider, TextInput, Button } from "react-native-paper";
 import LottieView from "lottie-react-native";
 
 import * as LocalAuthentication from "expo-local-authentication";
+import firebase from "../../utils/firebase";
 
-export default function Login({ navigate, auth, _auth }) {
+const fbAuth = firebase.auth();
+
+export default function Login({ navigate }) {
   const [email, setEmail] = useState("");
   const [emailValid, setEV] = useState(true);
   const [password, setPassword] = useState("");
@@ -35,16 +38,7 @@ export default function Login({ navigate, auth, _auth }) {
   const [biometricsCompatible, setBC] = useState(false);
 
   const handleLogin = () => {
-    if (
-      emailValid &&
-      passwordValid &&
-      password === "Testing123!" &&
-      email === "tetra96@live.fr"
-    ) {
-      navigate("Discover");
-    } else {
-      Alert.alert("Error", "Not logged");
-    }
+    fbAuth.signInWithEmailAndPassword(email, password);
   };
 
   useEffect(() => {
@@ -70,13 +64,8 @@ export default function Login({ navigate, auth, _auth }) {
       promptMessage: "Log into Gazouilli 🔐",
     });
     if (result.success) {
-      _auth({
-        name: "Florian",
-        acronym: "Florian".split(" ").map((word) => {
-          if (word.length > 0) return word[0];
-        }),
-      });
-      navigate("Discover");
+      fbAuth.signInAnonymously();
+      //navigate("Discover");
     } else {
       Alert.alert("Error", "Fingerprint does not works");
     }
